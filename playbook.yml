@@ -1,0 +1,58 @@
+- name: Deploy a web application
+  hosts: target1,target2
+  tasks:
+    - name: test reachability of host using ping
+      ping: 
+
+    - name: Install all required dependencies 
+      apt: name={{ item }} state=present
+      with_items:
+        - python-setuptools 
+        - python3.10-dev 
+        - build-essential 
+        - python-pip 
+        - python3-mysqldb
+        - python3-pip
+
+    - name: Install python dependencies
+      pip: 
+        name: 
+          - flask
+          - flask-mysql
+
+    - name: copy source code
+      copy:
+        src: /vagrant/app.py
+        dest: /opt/app.py
+
+    - name: Start web server on target1 with port 5000
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 --port 5000 &
+      when: "'target1' in inventory_hostname"
+
+    - name: Start web server on target2 with port 4141
+      shell: FLASK_APP=/opt/app.py nohup flask run --host=0.0.0.0 --port 4141 &
+      when: "'target2' in inventory_hostname"
+
+
+    - name: Install MySQL Database
+      apt: name={{ item }} state=present
+      with_items:
+        - mysql-server
+        - mysql-client
+
+    - name: Start mySql Service
+      service:
+        name: mysql
+        state: started
+        enabled: yes
+    
+    - name: Create Applciation Database
+      mysql_db: name=employee_db state=present
+
+    - name: Create Database user
+      mysql_user: 
+        name: db_user
+        password: Passw0rd
+        priv: '*.*:ALL'
+        state: present
+
