@@ -10,7 +10,6 @@
         - python-setuptools 
         - python3.10-dev 
         - build-essential 
-        - python-pip 
         - python3-mysqldb
         - python3-pip
 
@@ -34,25 +33,25 @@
       when: "'target2' in inventory_hostname"
 
 
-    - name: Install MySQL Database
-      apt: name={{ item }} state=present
-      with_items:
-        - mysql-server
-        - mysql-client
+    # - name: Install MySQL Database
+    #   apt: name={{ item }} state=present
+    #   with_items:
+    #     - mysql-server
+    #     - mysql-client
 
-    - name: Start mySql Service
-      service:
-        name: mysql
-        state: started
-        enabled: yes
+    # - name: Start mySql Service
+    #   service:
+    #     name: mysql
+    #     state: started
+    #     enabled: yes
     
-    - name: Create Applciation Database
-      mysql_db: name=employee_db state=present
+    # - name: Create Applciation Database
+    #   mysql_db: name=employee_db state=present
 
-    - name: Create Database user
-      mysql_user: 
-        name: db_user
-        password: Passw0rd
-        priv: '*.*:ALL'
-        state: present
+    # - name: Create Database user
+    #   mysql_user: 
+    #     name: db_user
+    #     password: Passw0rd
+    #     priv: '*.*:ALL'
+    #     state: present
 
